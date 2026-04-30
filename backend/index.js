@@ -10,7 +10,19 @@ const app = express();
 
 //Middleware setup
 app.use(express.json());
-app.use(cors("*")); //Change
+//app.use(cors("*")); //Change
+//to allow only our frontend to access the backend, we can specify the origin 
+// in the CORS options. This is more secure than allowing all origins with "*".
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || origin.endsWith(".vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 //--------------------------------MONGO SETUP--------------------------------------
 
